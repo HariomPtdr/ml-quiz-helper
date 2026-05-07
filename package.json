@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env server.js"
+    "start": "node server.js",
+    "start:local": "node --env-file=.env server.js"
   },
   "keywords": [],
   "author": "",
