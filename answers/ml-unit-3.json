@@ -1,0 +1,26 @@
+{
+  "name": "Machine Learning — Unit 3",
+  "scoreNote": "Source score sheet was 18/20. Q12 (kernel-size effect) and Q15 (ReLU function) scored 0/1 and are intentionally omitted — Claude will answer them. Add them here once you confirm the correct option.",
+  "answers": [
+    { "q": "In a convolutional layer, what does the term 'depth' refer to?", "a": "The number of filters" },
+    { "q": "If a convolutional layer with a kernel size of 5x5, stride 1, and padding 2 is applied to a 50x50 input, what will be the size of the output feature map?", "a": "50x50" },
+    { "q": "What is the role of the fully connected layer in a CNN?", "a": "To flatten the feature maps and perform classification" },
+    { "q": "Which CNN architecture is characterized by its use of 3x3 convolutional filters?", "a": "VGG" },
+    { "q": "What is the purpose of using multiple convolutional layers in sequence in a CNN?", "a": "To capture increasingly complex features" },
+    { "q": "What is the primary purpose of padding in a CNN?", "a": "To keep the spatial dimensions of the output same as input" },
+    { "q": "What does a stride of 2 in a convolutional layer imply?", "a": "The filter moves two pixels at a time" },
+    { "q": "What is the purpose of the softmax function in the output layer of a CNN used for classification?", "a": "To convert logits into class probabilities" },
+    { "q": "How does max pooling generally affect the feature map?", "a": "Reduces the spatial dimensions" },
+    { "q": "Which component of a CNN helps in reducing overfitting by randomly turning off some neurons during training?", "a": "Dropout" },
+    { "q": "An input image of size 128x128 is passed through a max pooling layer with a 4x4 window and stride 4. What is the size of the output feature map?", "a": "32x32" },
+    { "q": "Which technique is used to maintain the spatial dimensions of the input in a CNN?", "a": "Padding" },
+    { "q": "What does the kernel size in a convolutional layer determine?", "a": "The size of the convolutional filters" },
+    { "q": "How is the output of a convolutional layer computed?", "a": "By sliding a filter over the input and computing dot products" },
+    { "q": "A convolutional layer with a kernel size of 5x5, stride 2, and no padding is applied to a 100x100 input. What will be the size of the output feature map?", "a": "48x48" },
+    { "q": "What is the primary benefit of using pooling layers in CNNs?", "a": "To reduce the dimensionality of feature maps" },
+    { "q": "How do trainable parameters in a CNN get adjusted?", "a": "Through gradient descent" },
+    { "q": "What effect does increasing the number of filters in a convolutional layer have on the model?", "a": "Increases the computational complexity" },
+    { "q": "How does the size of the kernel affect the convolution operation in a CNN?", "a": "Larger kernels capture more detailed features" },
+    { "q": "In a CNN, what is the function of an activation function like ReLU?", "a": "To reduce the number of parameters" }
+  ]
+}

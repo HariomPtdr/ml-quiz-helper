@@ -1,0 +1,25 @@
+{
+  "name": "Machine Learning — Unit 2",
+  "answers": [
+    { "q": "In a feedforward neural network, what is the role of the input layer?", "a": "It receives input data and passes it to the hidden layers." },
+    { "q": "What is the purpose of regularization techniques, such as dropout, in neural networks?", "a": "To reduce overfitting by preventing co-adaptation of neurons." },
+    { "q": "In a feedforward neural network, how are neurons organized into layers?", "a": "Neurons are organized into input, hidden, and output layers." },
+    { "q": "Which of the following statements accurately describes the relationship between loss functions and cost functions?", "a": "Cost functions are derived from loss functions by adding regularization terms." },
+    { "q": "What is the role of the learning rate in the training of a neural network?", "a": "Adjusting the amount by which weights are updated during backpropagation." },
+    { "q": "What is the primary advantage of using batch normalization in neural networks?", "a": "To stabilize and accelerate the training process." },
+    { "q": "In gradient descent optimization, which function is typically minimized during training to update the model parameters?", "a": "Cost function" },
+    { "q": "Suppose you have a simple feedforward neural network with one input layer, one hidden layer with two neurons, and one output layer. Each neuron in the hidden layer has the following weights: w11=0.5, w12=-0.2, w21=0.3, and w22=0.4. The bias terms for the hidden layer neurons are b1=0.1 and b2=-0.3. If the input to the network is x=0.8, what is the output of the first neuron in the hidden layer after applying the ReLU activation function?", "a": "0.62" },
+    { "q": "In a neural network, what does the term 'backpropagation' refer to?", "a": "The process of adjusting the weights and biases of the network to minimize the error between predicted and actual outputs." },
+    { "q": "Which aspect of artificial neural networks (ANNs) allows them to learn complex non-linear relationships in data?", "a": "Activation functions" },
+    { "q": "You have a neural network with a single neuron in the output layer. The neuron has weights w1=0.6 and bias b=-0.2. If the input to the network is x=0.4, what is the output of the network after applying the sigmoid activation function?", "a": "0.635" },
+    { "q": "Which term refers to a single pass of the entire dataset through the neural network during training?", "a": "Epoch" },
+    { "q": "Which of the following techniques is used to address the problem of vanishing gradients in deep neural networks?", "a": "Batch Normalization" },
+    { "q": "Which of the following activation functions is commonly used in hidden layers of a neural network to introduce non-linearity?", "a": "Rectified Linear Unit (ReLU) activation function" },
+    { "q": "Suppose you have a simple feedforward neural network with one input layer, one hidden layer with two neurons, and one output layer. Each neuron in the hidden layer has the following weights: w11=0.5, w12=-0.2, w21=0.3, and w22=0.4. The bias terms for the hidden layer neurons are b1=0.1 and b2=-0.3. If the input to the network is x=0.8, the neuron in the hidden layer applying the ReLU activation function? If the output of the first neuron in the hidden layer is x1=0.5, and the output of the second neuron in the hidden layer is x2=0.3, what is the output of the network after applying the softmax activation function in the output layer?", "a": "[0.648, 0.352]" },
+    { "q": "What happens if the learning rate is too high during training?", "a": "The model may oscillate around the optimal solution." },
+    { "q": "Which type of neural network architecture is suitable for handling both sequential and spatial data, making it ideal for tasks such as image captioning and video classification?", "a": "Transformer" },
+    { "q": "When discussing the performance of a machine learning model, which term is commonly used to refer to the value computed by the loss function on a single training example?", "a": "Loss value" },
+    { "q": "Which of the following loss functions is commonly used for binary classification tasks in neural networks?", "a": "Binary Cross-Entropy Loss" },
+    { "q": "How does the number of layers in a neural network affect its capacity to learn?", "a": "Deeper networks can learn more complex patterns." }
+  ]
+}

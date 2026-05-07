@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#006d32" />
+  <title>Quiz Helper</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed-dim": "#adc7ff",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-variant": "#d3e4fe",
+            "outline-variant": "#bbcbb9",
+            "surface-container-low": "#eff4ff",
+            "primary-container": "#00d166",
+            "on-secondary": "#ffffff",
+            "outline": "#6c7b6c",
+            "surface-container-high": "#dce9ff",
+            "secondary-container": "#0070ea",
+            "on-primary-container": "#005324",
+            "on-background": "#0b1c30",
+            "background": "#f8f9ff",
+            "on-error-container": "#93000a",
+            "inverse-primary": "#30e375",
+            "surface-tint": "#006d32",
+            "on-tertiary-fixed": "#131b2e",
+            "on-secondary-container": "#fefcff",
+            "secondary": "#0059bb",
+            "on-primary-fixed-variant": "#005224",
+            "surface-dim": "#cbdbf5",
+            "tertiary-fixed-dim": "#bec6e0",
+            "primary-fixed": "#64ff92",
+            "on-primary-fixed": "#00210b",
+            "primary": "#006d32",
+            "on-surface": "#0b1c30",
+            "error-container": "#ffdad6",
+            "primary-fixed-dim": "#30e375",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed": "#d8e2ff",
+            "surface-container-highest": "#d3e4fe",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "surface": "#f8f9ff",
+            "tertiary-container": "#aeb5cf",
+            "on-primary": "#ffffff",
+            "on-surface-variant": "#3c4a3d",
+            "on-secondary-fixed-variant": "#004493",
+            "on-tertiary-container": "#3f475c",
+            "surface-container": "#e5eeff",
+            "surface-bright": "#f8f9ff",
+            "tertiary": "#565e74",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#dae2fd",
+            "inverse-surface": "#213145",
+            "on-secondary-fixed": "#001a41",
+            "on-tertiary-fixed-variant": "#3f465c"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-surface min-h-screen text-on-surface pb-24 antialiased">
+
+  <!-- Sidebar backdrop -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+  <!-- Sidebar drawer -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-surface-container-lowest shadow-2xl transform -translate-x-full transition-transform duration-300 z-50 flex flex-col">
+    <div class="px-5 pt-6 pb-5 border-b border-outline-variant/30 flex items-start justify-between flex-shrink-0">
+      <div>
+        <span class="inline-block px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label text-[10px] font-bold tracking-widest mb-3">CATALOG</span>
+        <h2 class="font-headline text-2xl font-bold tracking-tight text-on-surface leading-none">Quizzes</h2>
+        <p class="text-xs text-on-surface-variant mt-2 font-light">Tap to fill the URL · copy to use elsewhere</p>
+      </div>
+      <button id="closeSidebarBtn" type="button" class="w-9 h-9 rounded-full hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition" aria-label="Close menu">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto p-4">
+      <details open class="group">
+        <summary class="cursor-pointer flex items-center gap-2 py-2.5 px-3 rounded-lg hover:bg-surface-container-low select-none">
+          <span class="material-symbols-outlined text-base text-on-surface-variant group-open:rotate-90 transition-transform">chevron_right</span>
+          <span class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-base text-primary" style="font-variation-settings: 'FILL' 1;">school</span>
+          </span>
+          <span class="font-medium text-sm text-on-surface">Machine Learning</span>
+          <span class="ml-auto text-[10px] font-label tracking-widest text-outline">3 UNITS</span>
+        </summary>
+        <ul class="mt-2 space-y-1">
+          <li>
+            <div class="flex items-stretch gap-1 rounded-lg hover:bg-surface-container-low group/link transition">
+              <button type="button" class="quiz-link flex-1 text-left p-3 rounded-lg flex items-center gap-3"
+                data-quiz-url="https://docs.google.com/forms/d/e/1FAIpQLScjxdj8XmedhVf4JQcmI6QQMWoMpIpbhwvFT-jDEr_8FIU8bQ/viewform?hr_submission=ChkI096L--YSEhAIoYqNhYUYEgcI_ImNhYUYEAE&pli=1">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-medium text-on-surface">Unit 1</div>
+                  <div class="text-[11px] text-outline truncate font-mono">docs.google.com/forms/…cjxdj8XmedhVf4JQ…</div>
+                </div>
+                <span class="material-symbols-outlined text-base text-outline opacity-0 group-hover/link:opacity-100 transition">arrow_forward</span>
+              </button>
+              <button type="button" class="quiz-copy w-10 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition flex-shrink-0"
+                title="Copy URL"
+                data-copy-url="https://docs.google.com/forms/d/e/1FAIpQLScjxdj8XmedhVf4JQcmI6QQMWoMpIpbhwvFT-jDEr_8FIU8bQ/viewform?hr_submission=ChkI096L--YSEhAIoYqNhYUYEgcI_ImNhYUYEAE&pli=1">
+                <span class="material-symbols-outlined text-base">content_copy</span>
+              </button>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-stretch gap-1 rounded-lg hover:bg-surface-container-low group/link transition">
+              <button type="button" class="quiz-link flex-1 text-left p-3 rounded-lg flex items-center gap-3"
+                data-quiz-url="https://docs.google.com/forms/d/e/1FAIpQLSdZxha_HJ9stvYKoNVCdFUTZORdoYmg-79wwKiRAyz7Wa6QnQ/viewform?hr_submission=ChkI096L--YSEhAIn4qNhYUYEgcI_ImNhYUYEAE">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-medium text-on-surface">Unit 2</div>
+                  <div class="text-[11px] text-outline truncate font-mono">docs.google.com/forms/…dZxha_HJ9stvYKoN…</div>
+                </div>
+                <span class="material-symbols-outlined text-base text-outline opacity-0 group-hover/link:opacity-100 transition">arrow_forward</span>
+              </button>
+              <button type="button" class="quiz-copy w-10 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition flex-shrink-0"
+                title="Copy URL"
+                data-copy-url="https://docs.google.com/forms/d/e/1FAIpQLSdZxha_HJ9stvYKoNVCdFUTZORdoYmg-79wwKiRAyz7Wa6QnQ/viewform?hr_submission=ChkI096L--YSEhAIn4qNhYUYEgcI_ImNhYUYEAE">
+                <span class="material-symbols-outlined text-base">content_copy</span>
+              </button>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-stretch gap-1 rounded-lg hover:bg-surface-container-low group/link transition">
+              <button type="button" class="quiz-link flex-1 text-left p-3 rounded-lg flex items-center gap-3"
+                data-quiz-url="https://docs.google.com/forms/d/e/1FAIpQLSdaWyfvCZPnpHqvoLmjFuLDhsr75fZXFkfkzwfkJ7tCHRXWbQ/viewform?hr_submission=ChkI5Oex2eMSEhAI2IqNhYUYEgcI_ImNhYUYEAE">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-medium text-on-surface">Unit 3</div>
+                  <div class="text-[11px] text-outline truncate font-mono">docs.google.com/forms/…daWyfvCZPnpHqvoL…</div>
+                </div>
+                <span class="material-symbols-outlined text-base text-outline opacity-0 group-hover/link:opacity-100 transition">arrow_forward</span>
+              </button>
+              <button type="button" class="quiz-copy w-10 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition flex-shrink-0"
+                title="Copy URL"
+                data-copy-url="https://docs.google.com/forms/d/e/1FAIpQLSdaWyfvCZPnpHqvoLmjFuLDhsr75fZXFkfkzwfkJ7tCHRXWbQ/viewform?hr_submission=ChkI5Oex2eMSEhAI2IqNhYUYEgcI_ImNhYUYEAE">
+                <span class="material-symbols-outlined text-base">content_copy</span>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </details>
+    </nav>
+
+    <div class="p-4 border-t border-outline-variant text-[11px] text-outline flex-shrink-0">
+      Tap a unit to auto-fill the quiz URL. Use the copy icon to place it on your clipboard.
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-3 rounded-2xl bg-on-surface text-surface text-sm shadow-2xl opacity-0 transition-opacity duration-300 z-[60] pointer-events-none font-body"></div>
+
+  <!-- Top AppBar (glass-nav) -->
+  <header class="sticky top-0 z-30 glass-nav border-b border-outline-variant/20 px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <button id="openSidebarBtn" type="button" class="w-10 h-10 rounded-full hover:bg-surface-container transition-colors flex items-center justify-center" aria-label="Open quiz catalog">
+        <span class="material-symbols-outlined text-on-surface-variant">menu</span>
+      </button>
+      <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">quiz</span>
+      </div>
+      <h1 class="font-headline text-xl font-bold tracking-tight text-on-surface">Quiz Helper</h1>
+    </div>
+    <div id="conn-status" class="hidden sm:flex items-center gap-2 text-xs font-label tracking-wide text-on-surface-variant px-3 py-1.5 rounded-full bg-surface-container">
+      <span data-dot class="w-2 h-2 rounded-full bg-tertiary"></span>
+      <span data-label>idle</span>
+    </div>
+  </header>
+
+  <!-- Scrolling tip strip -->
+  <div class="marquee-bar bg-primary text-on-primary text-base sm:text-lg font-label font-medium tracking-wide overflow-hidden border-b border-primary-fixed-dim/30">
+    <div class="marquee-track flex whitespace-nowrap py-2.5">
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">menu</span>
+        Click the left side menu to access all 3 ML quiz links.
+      </span>
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">bolt</span>
+        The fastest, most accurate quiz-filling tool.
+      </span>
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">alternate_email</span>
+        Sign in with your Acropolis email only.
+      </span>
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">menu</span>
+        Click the left side menu to access all 3 ML quiz links.
+      </span>
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">bolt</span>
+        The fastest, most accurate quiz-filling tool.
+      </span>
+      <span class="marquee-item flex items-center gap-3 px-8 flex-shrink-0">
+        <span class="material-symbols-outlined text-xl">alternate_email</span>
+        Sign in with your Acropolis email only.
+      </span>
+    </div>
+  </div>
+
+  <main class="max-w-2xl mx-auto px-6 pt-8 sm:pt-10">
+
+    <!-- Hero -->
+    <section class="mb-12">
+      <span class="inline-block px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label text-xs font-bold tracking-wider mb-4">READY</span>
+      <h2 class="font-headline text-5xl md:text-6xl font-medium tracking-tighter leading-none text-on-surface">Quiz Helper</h2>
+    </section>
+
+    <!-- Stage 1: Setup -->
+    <section id="stage-setup" class="stage mb-14">
+      <div class="bg-surface-container-lowest rounded-2xl p-8 editorial-shadow">
+        <h2 class="text-2xl font-headline text-on-surface mb-6">Start a session</h2>
+        <form id="setup-form" class="space-y-5">
+          <label class="block">
+            <span class="text-xs font-label uppercase tracking-widest text-outline">
+              Quiz URL <span class="normal-case tracking-normal text-outline/80">(Click the left side menu to access all 3 ML quiz links)</span>
+            </span>
+            <input type="url" id="quizUrl" required placeholder="https://docs.google.com/forms/…/viewform"
+              class="mt-2 w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" />
+          </label>
+          <label class="block">
+            <span class="text-xs font-label uppercase tracking-widest text-outline">Your name</span>
+            <input type="text" id="name" required placeholder="Hariom Patidar"
+              class="mt-2 w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" />
+          </label>
+          <label class="block">
+            <span class="text-xs font-label uppercase tracking-widest text-outline">Enrollment</span>
+            <input type="text" id="enrollment" required placeholder="0827CS231097"
+              class="mt-2 w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" />
+          </label>
+          <button type="submit" id="startBtn"
+            class="w-full bg-primary text-on-primary py-3.5 px-6 rounded-2xl font-medium tracking-wide hover:bg-on-primary-fixed-variant transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60">
+            <span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+            <span id="startBtnLabel">Start session</span>
+          </button>
+          <p class="text-sm text-on-surface-variant text-center pt-2">A live browser view opens right here. Sign in to Google in the panel, and the helper takes over once you reach the form.</p>
+          <p class="text-xs text-outline text-center">Answers come from <code class="px-1.5 py-0.5 rounded bg-surface-container-low text-on-surface-variant font-mono">/answers/*.json</code>. Claude only fills in for quizzes with no saved file.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Stage 1.5: Embedded browser (sign-in + automation live view) -->
+    <section id="stage-browser" class="stage hidden mb-14">
+      <div class="bg-surface-container-lowest rounded-2xl p-4 sm:p-6 editorial-shadow">
+        <div class="flex items-start gap-3 mb-4">
+          <div id="browser-icon" class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0">
+            <span id="browser-icon-symbol" class="material-symbols-outlined text-on-primary-fixed">login</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 id="browser-title" class="text-lg sm:text-xl font-headline text-on-surface">Sign in to Google</h2>
+            <p id="browser-subtitle" class="text-xs sm:text-sm text-on-surface-variant">Tap fields to focus, type below. Once you reach the form, the helper takes over automatically.</p>
+          </div>
+          <button id="cancelBrowserBtn" type="button" class="text-xs px-3 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition flex-shrink-0">Cancel</button>
+        </div>
+
+        <div id="browser-frame" class="relative bg-black rounded-xl overflow-hidden aspect-[1280/900] shadow-inner select-none">
+          <img id="browser-img" alt="Live browser view" draggable="false"
+            class="absolute inset-0 w-full h-full object-contain cursor-crosshair touch-manipulation" />
+          <div id="browser-loading" class="absolute inset-0 flex items-center justify-center text-outline text-sm font-mono">
+            <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+            Connecting…
+          </div>
+        </div>
+
+        <div id="browser-input-bar" class="mt-4 flex items-stretch gap-2">
+          <input id="browser-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+            inputmode="text" placeholder="Type or paste — bar stays empty (forwarded to page above)"
+            class="flex-1 min-w-0 px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition text-sm" />
+          <button id="key-tab" type="button" class="px-3 py-3 rounded-xl bg-surface-container border border-outline-variant text-on-surface-variant text-xs font-mono hover:bg-surface-container-high transition flex-shrink-0">Tab</button>
+          <button id="key-enter" type="button" class="px-4 py-3 rounded-xl bg-primary text-on-primary text-xs font-medium hover:bg-on-primary-fixed-variant transition flex-shrink-0 flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">keyboard_return</span>
+          </button>
+        </div>
+
+        <details class="mt-4 group" open>
+          <summary class="cursor-pointer text-xs font-label uppercase tracking-widest text-outline flex items-center gap-1 select-none">
+            <span class="material-symbols-outlined text-base group-open:rotate-90 transition-transform">chevron_right</span>
+            Activity log
+          </summary>
+          <ul id="status-log" class="mt-2 space-y-1 max-h-44 overflow-y-auto bg-surface-container-low rounded-xl p-3 font-mono text-xs text-on-surface-variant"></ul>
+        </details>
+        <p class="text-[11px] text-outline mt-3 text-center font-label">Live view ~10fps · headless Chromium · viewport 1280×900</p>
+      </div>
+    </section>
+
+    <!-- Stage 2: Working (transient launch placeholder) -->
+    <section id="stage-working" class="stage hidden mb-14">
+      <div class="bg-surface-container-lowest rounded-2xl p-8 editorial-shadow">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center breathing-circle border-4 border-surface relative">
+            <div class="w-6 h-6 rounded-full bg-primary opacity-70 animate-pulse"></div>
+          </div>
+          <div>
+            <h2 class="text-2xl font-headline text-on-surface">Launching…</h2>
+            <p class="text-sm text-on-surface-variant">Spinning up headless Chromium.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 3: Review -->
+    <section id="stage-review" class="stage hidden mb-14">
+      <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 editorial-shadow">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="material-symbols-outlined text-primary text-3xl" data-icon="task_alt" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+          <h2 id="review-heading" class="text-2xl font-headline text-on-surface">Confirm submission</h2>
+        </div>
+        <p class="text-sm text-on-surface-variant mb-4">Below are the answers that will be submitted. Nothing is sent until you tap <span class="text-primary font-medium">Submit quiz</span>.</p>
+        <div id="review-summary" class="hidden text-xs font-label tracking-wide bg-primary-fixed text-on-primary-fixed rounded-xl px-4 py-2.5 mb-4 flex items-center gap-2"></div>
+        <div id="answer-list" class="space-y-3 mb-6"></div>
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant">
+          <button id="cancelBtn" type="button" class="px-5 py-2.5 rounded-2xl border border-outline-variant text-on-surface-variant hover:bg-surface-container-low transition">Cancel</button>
+          <button id="submitBtn" type="button" class="px-6 py-2.5 rounded-2xl bg-primary text-on-primary font-medium hover:bg-on-primary-fixed-variant transition-all active:scale-[0.98] flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+            <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+            <span id="submitBtnLabel">Submit quiz</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stage 4: Done -->
+    <section id="stage-done" class="stage hidden mb-14">
+      <div class="bg-secondary-container rounded-2xl p-6 sm:p-8 editorial-shadow relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 opacity-15 pointer-events-none">
+          <span class="material-symbols-outlined text-[180px] text-on-secondary-container" data-icon="celebration" style="font-variation-settings: 'FILL' 1;">celebration</span>
+        </div>
+        <h2 id="done-title" class="text-3xl font-headline text-on-secondary-container relative z-10 mb-4">All done</h2>
+
+        <div id="score-card" class="hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 mb-6 text-center relative z-10 shadow-[0_10px_30px_rgba(85,98,77,0.06)]">
+          <div class="text-xs font-label uppercase tracking-widest text-outline mb-4">Your score</div>
+          <div class="relative w-44 h-44 mx-auto mb-3">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="#e1e3dc" stroke-width="10"/>
+              <circle id="score-ring" cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGradient)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.726" stroke-dashoffset="326.726" style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);"/>
+              <defs>
+                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#55624d"/>
+                  <stop offset="100%" stop-color="#98a68e"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="flex items-baseline gap-0.5 leading-none">
+                <span id="score-value" class="text-4xl sm:text-5xl font-headline text-primary font-light">0</span>
+                <span class="text-lg text-on-surface-variant font-light">/</span>
+                <span id="score-total" class="text-xl text-on-surface-variant font-headline font-light">0</span>
+              </div>
+              <div id="score-pct" class="mt-1 text-xs font-label tracking-widest text-outline uppercase"></div>
+            </div>
+          </div>
+        </div>
+
+        <details id="done-details" class="relative z-10 mb-4">
+          <summary class="cursor-pointer text-xs font-label uppercase tracking-widest text-on-secondary-container/70 select-none">Confirmation page text</summary>
+          <pre id="done-body" class="mt-2 text-sm font-body text-on-secondary-container/80 whitespace-pre-wrap break-words max-h-72 overflow-y-auto bg-surface-container-lowest/50 rounded-xl p-3"></pre>
+        </details>
+
+        <div id="score-live-wrapper" class="hidden mb-4 relative z-10">
+          <button id="toggleScoreLiveBtn" type="button" class="text-xs font-label uppercase tracking-widest text-on-secondary-container/70 hover:text-on-secondary-container flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">visibility</span>
+            <span id="toggleScoreLiveLabel">Show live score page</span>
+          </button>
+          <div id="score-live-frame" class="hidden mt-3 relative bg-black rounded-xl overflow-hidden aspect-[1280/900] shadow-inner">
+            <img id="score-live-img" alt="Score page" class="absolute inset-0 w-full h-full object-contain" />
+          </div>
+        </div>
+
+        <a href="/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-on-primary font-medium hover:bg-on-primary-fixed-variant transition relative z-10">
+          <span class="material-symbols-outlined" data-icon="restart_alt">restart_alt</span>
+          Run another quiz
+        </a>
+      </div>
+    </section>
+
+    <!-- Stage error -->
+    <section id="stage-error" class="stage hidden mb-14">
+      <div class="bg-error-container rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="material-symbols-outlined text-on-error-container text-3xl" data-icon="error">error</span>
+          <h2 class="text-2xl font-headline text-on-error-container">Something went wrong</h2>
+        </div>
+        <p id="error-message" class="text-on-error-container/80 mb-4 font-body break-words"></p>
+        <details class="mb-6">
+          <summary class="cursor-pointer text-xs font-label uppercase tracking-widest text-on-error-container/70 select-none">What might've happened?</summary>
+          <ul class="mt-2 text-sm text-on-error-container/80 list-disc list-inside space-y-1 font-body">
+            <li>Google blocked headless Chromium during sign-in. Try clearing cookies for accounts.google.com on your normal browser.</li>
+            <li>The quiz URL you pasted isn't a Google Forms link, or expired.</li>
+            <li>The form has a layout this helper doesn't yet support (e.g. checkboxes or dropdowns instead of radio buttons).</li>
+            <li>The browser tab lost connection mid-session. Refresh and try again.</li>
+          </ul>
+        </details>
+        <div class="flex flex-wrap gap-3">
+          <a href="/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-on-error-container text-error-container font-medium hover:opacity-90 transition">
+            <span class="material-symbols-outlined" data-icon="restart_alt">restart_alt</span>
+            Start over
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

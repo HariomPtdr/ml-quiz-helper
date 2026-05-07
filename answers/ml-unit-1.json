@@ -1,0 +1,25 @@
+{
+  "name": "Machine Learning — Unit 1",
+  "answers": [
+    { "q": "Which field involves the development of algorithms that can improve their performance over time based on experience?", "a": "Machine Learning (ML)" },
+    { "q": "Suppose you are working on a project to predict house prices based on various features such as size, number of bedrooms, and location. What type of dataset are you most likely working with?", "a": "Regression dataset" },
+    { "q": "Which norm is also known as the Euclidean norm?", "a": "L2 norm" },
+    { "q": "Which of the following strategies can help reduce bias in a model?", "a": "Adding more features to the model" },
+    { "q": "What is the L1 norm of the vector v=(3,-2,5)?", "a": "5" },
+    { "q": "The error introduced by approximating a real-world problem with a simplified model.", "a": "Bias" },
+    { "q": "Which of the following represents a unit vector?", "a": "W=(0,0,1)" },
+    { "q": "Which of the following statements is true regarding linear separability?", "a": "Linearly separable data can be separated by a line or hyperplane in the input space." },
+    { "q": "In linear regression, the line of best fit is determined by:", "a": "Minimizing the sum of squared residuals" },
+    { "q": "Which evaluation metric is commonly used for binary classification problems and measures the proportion of true positive predictions among all positive examples?", "a": "Recall" },
+    { "q": "Suppose you are analyzing customer reviews to classify them into positive, negative, or neutral sentiments. What type of dataset would you use for sentiment analysis?", "a": "Classification dataset" },
+    { "q": "Which type of dataset consists of data points collected over successive time intervals?", "a": "Time series dataset" },
+    { "q": "What is the name of the technique used to deal with overfitting in machine learning models?", "a": "Regularization" },
+    { "q": "What does the coefficient of determination (R squared) measure in linear regression?", "a": "The percentage of variance in the dependent variable explained by the independent variable." },
+    { "q": "What happens to the bias and variance of a model as it is trained on more data?", "a": "Bias increases and variance decreases." },
+    { "q": "What is the process of feeding a machine learning model with data to adjust its internal parameters and improve performance?", "a": "Model Training" },
+    { "q": "What is the purpose of feature scaling in linear regression?", "a": "To standardize the range of independent variables." },
+    { "q": "What is the primary goal of supervised learning?", "a": "Minimize errors in predictions" },
+    { "q": "What is the main purpose of cross-validation in machine learning?", "a": "To estimate the model's performance on unseen data" },
+    { "q": "Which machine learning algorithm is used for both regression and classification tasks and is based on averaging the predictions of multiple weak learners?", "a": "Random Forest" }
+  ]
+}

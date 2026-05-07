@@ -1,0 +1,117 @@
+body {
+  font-family: 'Inter', sans-serif;
+  min-height: 100dvh;
+  background: #f8f9ff;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* Restore the editorial 884px floor on tablet+ only — phones get natural body height. */
+@media (min-width: 768px) {
+  body { min-height: max(884px, 100dvh); }
+}
+h1, h2, h3 {
+  font-family: 'Space Grotesk', sans-serif;
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glass-nav header (matches EcoSync) */
+.glass-nav {
+  background: rgba(248, 249, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Editorial drop shadow on cards */
+.editorial-shadow {
+  box-shadow: 0 24px 40px -12px rgba(11, 28, 48, 0.06);
+}
+
+/* Background gradient retained for variety on the body */
+.bg-zenith-gradient {
+  background: linear-gradient(135deg, #f8f9ff 0%, #eff4ff 50%, #d8e2ff 100%);
+  background-attachment: fixed;
+}
+
+/* Live screenshot — handle very wide images on small screens */
+#browser-img,
+#score-live-img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.breathing-circle {
+  box-shadow: 0 0 40px rgba(0, 109, 50, 0.18);
+}
+
+/* Activity log */
+#status-log li {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(187, 203, 185, 0.25);
+}
+#status-log li:last-child {
+  border-bottom: none;
+}
+#status-log::-webkit-scrollbar { width: 6px; }
+#status-log::-webkit-scrollbar-thumb { background: rgba(0, 109, 50, 0.2); border-radius: 3px; }
+#status-log::-webkit-scrollbar-track { background: transparent; }
+
+/* Marquee strip — replaces the old hint banner */
+.marquee-bar { position: relative; }
+.marquee-track {
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+.marquee-bar:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Smooth stage entrance */
+@keyframes stageEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stage-enter {
+  animation: stageEnter 320ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Form field invalid state */
+form input.field-invalid {
+  border-color: #ba1a1a !important;
+  background: #fff5f3;
+}
+form input.field-invalid:focus {
+  outline-color: #ba1a1a;
+}
+.field-error-msg {
+  color: #ba1a1a;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Prevent body scroll lock issues when sidebar is open on iOS */
+body.sidebar-open { overflow: hidden; }
+
+/* iOS double-tap-to-zoom suppression on common interactive controls */
+button, a, label, input[type="radio"], .quiz-link, .quiz-copy {
+  touch-action: manipulation;
+}
+
+/* Lift the toast above the iPhone home indicator */
+#toast { bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+
+/* On phones, make the activity log a touch shorter so the input bar stays visible above the keyboard */
+@media (max-width: 640px) {
+  #status-log { max-height: 9rem; }
+}
