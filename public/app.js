@@ -8,6 +8,10 @@ const stages = {
 };
 const VIEWPORT_W = 1280;
 const VIEWPORT_H = 900;
+// Updated from the /api/start response so click coords map to the
+// actual headless Chromium viewport (which now matches the user's
+// device).
+const sessionViewport = { width: VIEWPORT_W, height: VIEWPORT_H };
 const statusLog = document.getElementById('status-log');
 const answerList = document.getElementById('answer-list');
 const reviewHeading = document.getElementById('review-heading');
@@ -142,7 +146,13 @@ document.getElementById('setup-form').addEventListener('submit', async (e) => {
   startBtn.disabled = true;
   startBtnLabel.textContent = 'Starting…';
 
-  const payload = { quizUrl, name, enrollment };
+  // Send the user's viewport so headless Chromium renders at a matching
+  // size — eliminates the 1280×900 letterbox in the embedded view.
+  const payload = {
+    quizUrl, name, enrollment,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+  };
 
   try {
     const res = await fetch('/api/start', {
@@ -154,8 +164,12 @@ document.getElementById('setup-form').addEventListener('submit', async (e) => {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || `HTTP ${res.status}`);
     }
-    const { sessionId: id } = await res.json();
+    const { sessionId: id, viewport } = await res.json();
     sessionId = id;
+    if (viewport && viewport.width && viewport.height) {
+      sessionViewport.width = viewport.width;
+      sessionViewport.height = viewport.height;
+    }
     statusLog.innerHTML = '';
     show('working');
     openEventStream();
@@ -451,7 +465,9 @@ function stopBrowserStream() {
 function imgToViewportCoords(clientX, clientY) {
   const rect = browserImg.getBoundingClientRect();
   if (rect.width === 0 || rect.height === 0) return null;
-  const aspect = VIEWPORT_W / VIEWPORT_H;
+  const vw = sessionViewport.width;
+  const vh = sessionViewport.height;
+  const aspect = vw / vh;
   const containerAspect = rect.width / rect.height;
   let renderedW, renderedH;
   if (containerAspect > aspect) {
@@ -467,8 +483,8 @@ function imgToViewportCoords(clientX, clientY) {
   const localY = clientY - rect.top - offsetY;
   if (localX < 0 || localX > renderedW || localY < 0 || localY > renderedH) return null;
   return {
-    x: (localX / renderedW) * VIEWPORT_W,
-    y: (localY / renderedH) * VIEWPORT_H,
+    x: (localX / renderedW) * vw,
+    y: (localY / renderedH) * vh,
   };
 }
 

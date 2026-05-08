@@ -311,6 +311,37 @@ function findSavedAnswer(question) {
 const VIEWPORT_W = 1280;
 const VIEWPORT_H = 900;
 
+// Render Chromium at a viewport that matches the user's screen so the
+// embedded screenshot fills their device without letterboxing. Clamp
+// so Google Forms still gets a desktop-class width (form-fill code is
+// shaped around the desktop layout).
+function clampViewport(w, h) {
+  const MIN_W = 800;
+  const MAX_W = 1920;
+  const MIN_H = 600;
+  const MAX_H = 2400;
+  let width = Math.round(Number(w));
+  let height = Math.round(Number(h));
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return { width: VIEWPORT_W, height: VIEWPORT_H };
+  }
+  const aspect = width / height;
+  if (width < MIN_W) {
+    width = MIN_W;
+    height = Math.round(MIN_W / aspect);
+  }
+  if (width > MAX_W) {
+    width = MAX_W;
+    height = Math.round(MAX_W / aspect);
+  }
+  if (height > MAX_H) {
+    height = MAX_H;
+    width = Math.round(MAX_H * aspect);
+  }
+  if (height < MIN_H) height = MIN_H;
+  return { width, height };
+}
+
 function emitPhase(session, phase) {
   session.phase = phase;
   if (session.sse) sseSend(session.sse, 'phase', { phase });
@@ -326,8 +357,9 @@ async function launchAndDrive(session) {
       headless: true,
       args: ['--disable-blink-features=AutomationControlled'],
     });
+    const vp = session.viewport || { width: VIEWPORT_W, height: VIEWPORT_H };
     ctx = await browser.newContext({
-      viewport: { width: VIEWPORT_W, height: VIEWPORT_H },
+      viewport: { width: vp.width, height: vp.height },
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
     });
     page = await ctx.newPage();
@@ -707,14 +739,16 @@ async function submitAnswers(session, finalAnswers) {
 // ---------------------------------------------------------------------------
 
 app.post('/api/start', (req, res) => {
-  const { quizUrl, name, enrollment } = req.body || {};
+  const { quizUrl, name, enrollment, viewportWidth, viewportHeight } = req.body || {};
   if (!quizUrl || !name || !enrollment) {
     return res.status(400).json({ error: 'quizUrl, name, and enrollment are required' });
   }
   const id = newSessionId();
+  const viewport = clampViewport(viewportWidth, viewportHeight);
   const session = {
     id,
     input: { quizUrl, name, enrollment },
+    viewport,
     phase: 'launching',
     heading: '',
     statusLog: [],
@@ -735,7 +769,7 @@ app.post('/api/start', (req, res) => {
   });
   // Don't await — drive the browser in the background
   launchAndDrive(session);
-  res.json({ sessionId: id });
+  res.json({ sessionId: id, viewport });
 });
 
 app.get('/api/events', (req, res) => {
@@ -790,8 +824,10 @@ app.post('/api/input', async (req, res) => {
   try {
     const page = session.page;
     if (type === 'click') {
-      const cx = Math.max(0, Math.min(VIEWPORT_W, Number(x)));
-      const cy = Math.max(0, Math.min(VIEWPORT_H, Number(y)));
+      const vw = session.viewport?.width || VIEWPORT_W;
+      const vh = session.viewport?.height || VIEWPORT_H;
+      const cx = Math.max(0, Math.min(vw, Number(x)));
+      const cy = Math.max(0, Math.min(vh, Number(y)));
       await page.mouse.click(cx, cy, { delay: 30 });
     } else if (type === 'type') {
       await page.keyboard.type(String(text || ''), { delay: 8 });
