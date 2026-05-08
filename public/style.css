@@ -185,3 +185,59 @@ button, a, label, input[type="radio"], .quiz-link, .quiz-copy {
 @media (prefers-reduced-motion: reduce) {
   .stage-enter { animation: none; }
 }
+
+/* ─── Fullscreen Chromium sign-in on mobile ───────────────────────────
+   While the user is signing in to Google, the embedded headless-browser
+   screenshot is the *only* thing they need to see — header, marquee,
+   activity log are noise. When .stage-fullscreen is on, take over the
+   entire viewport so the sign-in page is large and readable. The class
+   is added by app.js for the 'signin' phase only and removed once the
+   helper takes over. */
+@media (max-width: 768px) {
+  body.fullscreen-browser {
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+  body.fullscreen-browser > header,
+  body.fullscreen-browser > .marquee-bar {
+    display: none;
+  }
+  #stage-browser.stage-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    margin: 0;
+    padding: 0;
+    background: #f8f9ff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: none;
+  }
+  #stage-browser.stage-fullscreen > div {
+    flex: 1 1 auto;
+    border-radius: 0;
+    margin: 0;
+    padding: 12px;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #stage-browser.stage-fullscreen #browser-frame {
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 0;
+    border-radius: 12px;
+  }
+  #stage-browser.stage-fullscreen details,
+  #stage-browser.stage-fullscreen > div > p:last-child {
+    display: none;
+  }
+  #stage-browser.stage-fullscreen #browser-input-bar {
+    margin-top: 10px;
+  }
+}

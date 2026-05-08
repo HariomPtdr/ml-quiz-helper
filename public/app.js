@@ -54,6 +54,13 @@ function show(stage) {
   target.classList.remove('stage-enter');
   void target.offsetWidth; // force reflow so the class re-applies
   target.classList.add('stage-enter');
+  // Always exit the fullscreen browser takeover when leaving the browser stage —
+  // protects against errors / cancellations leaving the page chrome hidden.
+  if (stage !== 'browser') {
+    document.body.classList.remove('fullscreen-browser');
+    const browserStage = document.getElementById('stage-browser');
+    if (browserStage) browserStage.classList.remove('stage-fullscreen');
+  }
   // Scroll the new stage into view (helpful on mobile after a transition)
   if (typeof target.scrollIntoView === 'function') {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -379,6 +386,7 @@ function handlePhase(phase) {
     if (browserSubtitle) browserSubtitle.textContent = 'Tap fields to focus, type below. Once you reach the form, the helper takes over automatically.';
     if (browserIcon) { browserIcon.textContent = 'login'; browserIcon.classList.remove('animate-spin'); }
     if (inputBar) inputBar.style.display = '';
+    setFullscreenBrowser(true);
     setTimeout(() => browserInput && browserInput.focus(), 100);
   } else if (phase === 'automating') {
     show('browser');
@@ -387,8 +395,25 @@ function handlePhase(phase) {
     if (browserSubtitle) browserSubtitle.textContent = 'Hands off — the helper is filling fields and reading questions.';
     if (browserIcon) { browserIcon.textContent = 'progress_activity'; browserIcon.classList.add('animate-spin'); }
     if (inputBar) inputBar.style.display = 'none';
+    setFullscreenBrowser(false);
   } else if (phase === 'review' || phase === 'submitting' || phase === 'done') {
     stopBrowserStream();
+    setFullscreenBrowser(false);
+  }
+}
+
+// Toggle the mobile-fullscreen takeover for the embedded Chromium view.
+// Used during sign-in so the user sees the full Google page; removed as
+// soon as the helper takes over automated form filling.
+function setFullscreenBrowser(on) {
+  const stage = document.getElementById('stage-browser');
+  if (!stage) return;
+  if (on) {
+    stage.classList.add('stage-fullscreen');
+    document.body.classList.add('fullscreen-browser');
+  } else {
+    stage.classList.remove('stage-fullscreen');
+    document.body.classList.remove('fullscreen-browser');
   }
 }
 
