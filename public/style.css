@@ -115,3 +115,73 @@ button, a, label, input[type="radio"], .quiz-link, .quiz-copy {
 @media (max-width: 640px) {
   #status-log { max-height: 9rem; }
 }
+
+/* ─── Mobile-friendly overrides ───────────────────────────────────────── */
+
+/* iOS Safari auto-zooms on focus when input font-size is < 16px.
+   Force every input/textarea/select to 16px on phones so the page never
+   zooms in mid-typing. */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+    line-height: 1.4;
+  }
+}
+
+/* backdrop-filter: blur() is one of the most expensive things you can
+   render on a mobile GPU — it forces a full-screen offscreen pass every
+   frame the header is on screen. Replace with a flat translucent fill on
+   phones. */
+@media (max-width: 768px) {
+  .glass-nav {
+    background: rgba(248, 249, 255, 0.96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* Big soft shadows are cheap on desktop, costly on mobile. Lighter shadow on phones. */
+  .editorial-shadow {
+    box-shadow: 0 4px 14px -4px rgba(11, 28, 48, 0.08);
+  }
+  /* Slow the marquee a touch and stop hinting GPU layers we don't need. */
+  .marquee-track {
+    animation-duration: 60s;
+    will-change: auto;
+  }
+  /* Drop the breathing-circle glow blur on mobile. */
+  .breathing-circle {
+    box-shadow: 0 0 16px rgba(0, 109, 50, 0.18);
+  }
+}
+
+/* Make the embedded "live browser" viewer much taller on phones so the
+   1280×900 Google sign-in / Google Forms screenshot is actually readable
+   without pinch-to-zoom. The fixed 1280:900 aspect ratio shrank it to
+   ~280px tall; on phones we go to roughly 9:16 portrait. */
+@media (max-width: 768px) {
+  #browser-frame {
+    aspect-ratio: 9 / 14;
+  }
+  #score-live-frame {
+    aspect-ratio: 9 / 14;
+  }
+  /* Let the user pinch-zoom the live screenshot itself if they still want
+     to — the rest of the UI is fine without zoom, but the embedded form
+     image benefits from it. */
+  #browser-img,
+  #score-live-img {
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+}
+
+/* Bigger tap targets on phones — 44px minimum is the iOS HIG guideline. */
+@media (max-width: 768px) {
+  button, a.inline-flex, .quiz-link, .quiz-copy {
+    min-height: 44px;
+  }
+}
+
+/* Respect motion-reduction users — already handled for marquee, also kill
+   the stage entrance animation. */
+@media (prefers-reduced-motion: reduce) {
+  .stage-enter { animation: none; }
+}

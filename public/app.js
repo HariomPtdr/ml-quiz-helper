@@ -392,6 +392,11 @@ function handlePhase(phase) {
   }
 }
 
+// Phones can't comfortably decode a 1280×900 PNG every 100ms — drop to ~4fps
+// on small screens. Desktop stays at ~10fps.
+const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
+const frameInterval = () => (isMobileViewport() ? 250 : 100);
+
 function startBrowserStream() {
   if (streamActive) return;
   streamActive = true;
@@ -403,7 +408,7 @@ function startBrowserStream() {
     next.onload = () => {
       browserImg.src = next.src;
       if (browserLoading) browserLoading.style.display = 'none';
-      streamTimer = setTimeout(fetchFrame, 100);
+      streamTimer = setTimeout(fetchFrame, frameInterval());
     };
     next.onerror = () => {
       streamTimer = setTimeout(fetchFrame, 500);
