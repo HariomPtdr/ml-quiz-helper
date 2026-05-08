@@ -186,58 +186,119 @@ button, a, label, input[type="radio"], .quiz-link, .quiz-copy {
   .stage-enter { animation: none; }
 }
 
-/* ─── Fullscreen Chromium sign-in on mobile ───────────────────────────
-   While the user is signing in to Google, the embedded headless-browser
-   screenshot is the *only* thing they need to see — header, marquee,
-   activity log are noise. When .stage-fullscreen is on, take over the
-   entire viewport so the sign-in page is large and readable. The class
-   is added by app.js for the 'signin' phase only and removed once the
-   helper takes over. */
-@media (max-width: 768px) {
-  body.fullscreen-browser {
-    overflow: hidden;
-    padding-bottom: 0;
-  }
-  body.fullscreen-browser > header,
-  body.fullscreen-browser > .marquee-bar {
-    display: none;
-  }
-  #stage-browser.stage-fullscreen {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    margin: 0;
-    padding: 0;
-    background: #f8f9ff;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    max-width: none;
-  }
-  #stage-browser.stage-fullscreen > div {
-    flex: 1 1 auto;
-    border-radius: 0;
-    margin: 0;
-    padding: 12px;
-    padding-top: calc(12px + env(safe-area-inset-top));
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-  #stage-browser.stage-fullscreen #browser-frame {
-    flex: 1 1 auto;
-    aspect-ratio: auto;
-    height: auto;
-    min-height: 0;
-    border-radius: 12px;
-  }
-  #stage-browser.stage-fullscreen details,
-  #stage-browser.stage-fullscreen > div > p:last-child {
-    display: none;
-  }
-  #stage-browser.stage-fullscreen #browser-input-bar {
-    margin-top: 10px;
-  }
+/* ─── Kiosk-mode Chromium sign-in (web + phone) ──────────────────────
+   While the user is signing in to Google, only the live screenshot is
+   shown — no header, marquee, card chrome, input bar, activity log, or
+   footer text. The user fills the form by tapping fields directly in
+   the screenshot. The hidden #browser-input is kept focusable so mobile
+   keyboards still pop up on tap. A tiny × in the top corner is the
+   single escape hatch. The class is added by app.js for the 'signin'
+   phase only and removed once the helper takes over.
+
+   Apply to all viewports — both desktop browser and phone get the same
+   minimal view per user request. */
+body.fullscreen-browser {
+  overflow: hidden;
+  padding-bottom: 0;
+}
+body.fullscreen-browser > header,
+body.fullscreen-browser > .marquee-bar,
+body.fullscreen-browser > main > section:not(#stage-browser),
+body.fullscreen-browser > #toast {
+  display: none !important;
+}
+#stage-browser.stage-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: none;
+}
+#stage-browser.stage-fullscreen > div {
+  flex: 1 1 auto;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #000;
+}
+/* Hide the input bar, activity log, and footer text. */
+#stage-browser.stage-fullscreen #browser-input-bar,
+#stage-browser.stage-fullscreen details,
+#stage-browser.stage-fullscreen > div > p:last-child {
+  display: none !important;
+}
+/* The card header row holds icon, title, subtitle, AND cancel. We need
+   to keep the cancel button rendered (it's our only escape hatch), so
+   flatten the wrapper with display: contents and hide the icon and
+   title/subtitle individually. */
+#stage-browser.stage-fullscreen > div > div:first-child {
+  display: contents !important;
+}
+#stage-browser.stage-fullscreen #browser-icon,
+#stage-browser.stage-fullscreen #browser-title,
+#stage-browser.stage-fullscreen #browser-subtitle {
+  display: none !important;
+}
+/* The element wrapping title+subtitle is the second child div of the
+   row; with display:contents on the row, it becomes a direct sibling
+   we can hide. */
+#stage-browser.stage-fullscreen > div > div.flex-1 {
+  display: none !important;
+}
+/* Live screenshot fills the whole viewport. */
+#stage-browser.stage-fullscreen #browser-frame {
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+  height: auto;
+  min-height: 0;
+  border-radius: 0;
+  background: #000;
+}
+/* Keep #browser-input in the DOM and focusable so soft keyboards still
+   appear when the user taps a field in the screenshot — but invisible. */
+#stage-browser.stage-fullscreen #browser-input {
+  position: fixed !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: -1 !important;
+}
+/* Tiny floating cancel × — the only on-screen control. */
+#stage-browser.stage-fullscreen #cancelBrowserBtn {
+  display: inline-flex !important;
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  right: calc(10px + env(safe-area-inset-right));
+  z-index: 70;
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 0;
+  align-items: center;
+  justify-content: center;
+}
+#stage-browser.stage-fullscreen #cancelBrowserBtn::before {
+  content: '×';
+  font-size: 22px;
+  line-height: 1;
 }
