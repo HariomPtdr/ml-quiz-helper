@@ -139,11 +139,7 @@ function renderTable(subs) {
           ? `<span class="font-headline font-medium text-primary">${s.score}/${s.total}</span>`
           : '<span class="text-on-surface-variant text-xs">—</span>'}
       </td>
-      <td>
-        ${s.alreadySubmitted
-          ? '<span class="inline-block px-2 py-0.5 rounded-full bg-surface-container text-xs font-label tracking-wide">already submitted</span>'
-          : '<span class="inline-block px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-xs font-label tracking-wide">submitted</span>'}
-      </td>
+      <td>${renderStatus(s)}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -164,6 +160,23 @@ function urlTail(u) {
   if (!u) return '—';
   const m = u.match(/forms\/d\/e\/([^/]+)/);
   return m ? `…${m[1].slice(-12)}` : u.slice(0, 50);
+}
+
+function renderStatus(s) {
+  // Prefer the explicit status field; fall back to alreadySubmitted for legacy rows.
+  const status = s.status || (s.alreadySubmitted === true ? 'already-submitted'
+                            : s.alreadySubmitted === false ? 'submitted'
+                            : 'unknown');
+  if (status === 'started') {
+    return '<span class="inline-block px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-label tracking-wide">started</span>';
+  }
+  if (status === 'already-submitted') {
+    return '<span class="inline-block px-2 py-0.5 rounded-full bg-surface-container text-xs font-label tracking-wide">already submitted</span>';
+  }
+  if (status === 'submitted') {
+    return '<span class="inline-block px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-xs font-label tracking-wide">submitted</span>';
+  }
+  return `<span class="inline-block px-2 py-0.5 rounded-full bg-surface-container text-xs font-label tracking-wide">${escapeHtml(status)}</span>`;
 }
 
 function escapeHtml(s) {

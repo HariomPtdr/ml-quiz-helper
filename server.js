@@ -147,7 +147,7 @@ function recordSubmission(rec) {
   try {
     const line = JSON.stringify({ ts: new Date().toISOString(), ...rec }) + '\n';
     fs.appendFileSync(SUBMISSIONS_FILE, line);
-    console.log(`[admin] recorded submission: name=${rec.name} enrollment=${rec.enrollment} score=${rec.score ?? '-'}/${rec.total ?? '-'} alreadySubmitted=${!!rec.alreadySubmitted}`);
+    console.log(`[admin] recorded ${rec.status || 'event'}: name=${rec.name} enrollment=${rec.enrollment} score=${rec.score ?? '-'}/${rec.total ?? '-'} session=${rec.sessionId || '-'}`);
   } catch (e) {
     console.warn(`[admin] failed to record submission: ${e.message}`);
   }
@@ -207,10 +207,26 @@ app.get('/api/admin/submissions', requireAdmin, (req, res) => {
 
 app.get('/api/admin/stats', requireAdmin, (req, res) => {
   const list = readSubmissions();
+
+  // Collapse multiple events from the same session (started → submitted) into a
+  // single attempt for counting purposes. Prefer the most-progressed event per
+  // session (submitted/already-submitted over started) for quizName/score data.
+  const STATUS_RANK = { 'started': 0, 'submitted': 1, 'already-submitted': 1 };
+  const bySession = new Map();
+  const orphan = []; // rows missing sessionId — count each individually
+  for (const r of list) {
+    if (!r.sessionId) { orphan.push(r); continue; }
+    const prev = bySession.get(r.sessionId);
+    if (!prev || (STATUS_RANK[r.status] ?? 0) >= (STATUS_RANK[prev.status] ?? 0)) {
+      bySession.set(r.sessionId, r);
+    }
+  }
+  const attempts = [...bySession.values(), ...orphan];
+
   const byEnrollment = {};
   const byQuiz = {};
   let totalScore = 0, totalMax = 0, scoredCount = 0;
-  for (const r of list) {
+  for (const r of attempts) {
     if (r.enrollment) byEnrollment[r.enrollment] = (byEnrollment[r.enrollment] || 0) + 1;
     const k = r.quizName || r.quizUrl || 'unknown';
     byQuiz[k] = (byQuiz[k] || 0) + 1;
@@ -222,7 +238,7 @@ app.get('/api/admin/stats', requireAdmin, (req, res) => {
     }
   }
   res.json({
-    total: list.length,
+    total: attempts.length,
     uniqueUsers: Object.keys(byEnrollment).length,
     byEnrollment,
     byQuiz,
@@ -384,6 +400,8 @@ async function launchAndDrive(session) {
       const finalBody = (await page.locator('body').innerText().catch(() => '')).slice(0, 1500);
       emitPhase(session, 'done');
       recordSubmission({
+        sessionId: session.id,
+        status: 'already-submitted',
         name: session.input.name,
         enrollment: session.input.enrollment,
         quizUrl: session.input.quizUrl,
@@ -708,6 +726,13 @@ app.post('/api/start', (req, res) => {
     lastTouch: Date.now(),
   };
   sessions.set(id, session);
+  recordSubmission({
+    sessionId: id,
+    status: 'started',
+    name,
+    enrollment,
+    quizUrl,
+  });
   // Don't await — drive the browser in the background
   launchAndDrive(session);
   res.json({ sessionId: id });
@@ -796,6 +821,8 @@ app.post('/api/submit', async (req, res) => {
     const result = await submitAnswers(session, answers);
     pushStatus(session, 'Submitted.');
     recordSubmission({
+      sessionId: session.id,
+      status: 'submitted',
       name: session.input.name,
       enrollment: session.input.enrollment,
       quizUrl: session.input.quizUrl,
